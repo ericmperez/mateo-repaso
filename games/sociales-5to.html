@@ -1,199 +1,257 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Sociales 5to — Mateo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sociales 5to - Mateo</title>
 <style>
-:root{--bg:#0b1220;--card:#152238;--y:#fbbf24;--g:#22c55e;--r:#f87171;--t:#f1f5f9;--m:#94a3b8;--a:#38bdf8}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:radial-gradient(1000px 500px at 50% -20%,#1e3a5f,var(--bg));color:var(--t);min-height:100vh;padding:1rem}
-.w{max-width:640px;margin:0 auto}
-.top{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem}
-h1{font-size:1.35rem;margin:0}a.back{color:var(--a);text-decoration:none;font-weight:700;font-size:.9rem}
-.hud{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1rem}
-.stat{background:var(--card);border:1px solid #334155;border-radius:.85rem;padding:.75rem;text-align:center}
-.stat b{display:block;font-size:1.35rem;color:var(--y)}.stat span{font-size:.75rem;color:var(--m);text-transform:uppercase;letter-spacing:.04em}
-.card{background:var(--card);border:1px solid #334155;border-radius:1rem;padding:1.25rem;box-shadow:0 10px 30px #0004}
-.pill{display:inline-block;background:#334155;color:var(--m);font-size:.78rem;padding:.25rem .6rem;border-radius:999px;margin-bottom:.75rem;font-weight:600}
-.q{font-size:1.2rem;font-weight:800;line-height:1.35;margin:0 0 1rem}
-.opts{display:grid;gap:.55rem}
-.opt{text-align:left;padding:.9rem 1rem;border-radius:.8rem;border:2px solid #475569;background:#0b1220;color:var(--t);cursor:pointer;font-size:1rem}
-.opt:hover:not(:disabled){border-color:var(--a)}.opt:disabled{cursor:default}
-.opt.ok{border-color:var(--g);background:#14532d55}.opt.bad{border-color:var(--r);background:#7f1d1d44}
-.fb{min-height:1.4em;margin-top:.85rem;font-weight:700}.fb.ok{color:var(--g)}.fb.bad{color:var(--r)}
-.row{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
-.btn{background:var(--y);color:#0b1220;border:0;font-weight:900;padding:.75rem 1.15rem;border-radius:.75rem;cursor:pointer;font-size:1rem}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn.ghost{background:transparent;color:var(--a);border:2px solid var(--a)}
-.done{text-align:center;padding:1.5rem}.done h2{color:var(--y);margin-top:0}
-.bar{height:8px;background:#334155;border-radius:99px;overflow:hidden;margin-bottom:1rem}
-.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--a),var(--y));width:0%;transition:width .3s}
-.tag-retry{color:var(--r);font-weight:800}
+  :root { --bg:#0b1220; --card:#152238; --y:#fbbf24; --g:#22c55e; --r:#f87171; --t:#f1f5f9; --m:#94a3b8; --a:#38bdf8; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, sans-serif; background: #0b1220; color: var(--t); min-height: 100vh; padding: 16px; }
+  .w { max-width: 640px; margin: 0 auto; }
+  a.back { color: var(--a); font-weight: 700; text-decoration: none; }
+  h1 { font-size: 1.4rem; margin: 8px 0 16px; }
+  .hud { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .stat { background: var(--card); border: 1px solid #334155; border-radius: 12px; padding: 10px; text-align: center; }
+  .stat b { display: block; font-size: 1.4rem; color: var(--y); }
+  .stat span { font-size: 0.7rem; color: var(--m); text-transform: uppercase; }
+  .bar { height: 8px; background: #334155; border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
+  .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--a), var(--y)); transition: width .25s; }
+  .card { background: var(--card); border: 1px solid #334155; border-radius: 16px; padding: 18px; }
+  .meta { color: var(--m); font-size: 0.85rem; margin-bottom: 10px; font-weight: 600; }
+  .meta .retry { color: var(--r); }
+  .q { font-size: 1.2rem; font-weight: 800; line-height: 1.35; margin: 0 0 14px; }
+  .opts { display: grid; gap: 8px; }
+  button.opt { text-align: left; padding: 14px; border-radius: 12px; border: 2px solid #475569; background: #0b1220; color: var(--t); font-size: 1rem; cursor: pointer; }
+  button.opt:hover:not(:disabled) { border-color: var(--a); }
+  button.opt:disabled { cursor: default; }
+  button.opt.ok { border-color: var(--g); background: rgba(20,83,45,.35); }
+  button.opt.bad { border-color: var(--r); background: rgba(127,29,29,.3); }
+  .fb { min-height: 1.5em; margin-top: 12px; font-weight: 700; }
+  .fb.ok { color: var(--g); } .fb.bad { color: var(--r); }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .btn { background: var(--y); color: #0b1220; border: 0; font-weight: 900; padding: 12px 18px; border-radius: 12px; font-size: 1rem; cursor: pointer; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .done { text-align: center; display: none; }
+  .done.show { display: block; }
+  .play.hide { display: none; }
+  .err { background: #7f1d1d; padding: 12px; border-radius: 8px; margin-bottom: 12px; display: none; }
 </style>
 </head>
 <body>
 <div class="w">
-  <div class="top">
-    <div>
-      <a class="back" href="../index.html">← Juegos</a>
-      <h1>🌍 Sociales 5to</h1>
-    </div>
-  </div>
+  <a class="back" href="../index.html">&larr; Juegos</a>
+  <h1>Sociales 5to</h1>
+  <div class="err" id="err"></div>
   <div class="hud">
     <div class="stat"><b id="pts">0</b><span>Puntos</span></div>
     <div class="stat"><b id="streak">0</b><span>Racha</span></div>
     <div class="stat"><b id="left">0</b><span>Por dominar</span></div>
   </div>
   <div class="bar"><i id="prog"></i></div>
-  <div class="card" id="play">
-    <div class="pill" id="meta"></div>
+
+  <div class="card play" id="play">
+    <div class="meta" id="meta">Cargando...</div>
     <div class="q" id="q"></div>
     <div class="opts" id="opts"></div>
     <div class="fb" id="fb"></div>
     <div class="row">
-      <span id="hint" style="color:var(--m);font-size:.85rem"></span>
-      <button class="btn" id="next" disabled>Siguiente →</button>
+      <span id="hint" style="color:var(--m);font-size:0.85rem"></span>
+      <button class="btn" id="next" disabled>Siguiente</button>
     </div>
   </div>
-  <div class="card done" id="done" hidden>
-    <h2>¡Campeón, Mateo! 🏆</h2>
+
+  <div class="card done" id="done">
+    <h2 style="color:var(--y);margin-top:0">Campeon, Mateo!</h2>
     <p id="final"></p>
-    <p style="color:var(--m)">Récord: <b id="best" style="color:var(--y)"></b> pts</p>
+    <p style="color:var(--m)">Record: <b id="best" style="color:var(--y)">0</b> pts</p>
     <button class="btn" id="again">Jugar otra vez</button>
   </div>
 </div>
 <script>
-const BANK = [
-  {id:'pc', q:'¿Qué es participación ciudadana?', a:'La manera de tomar decisiones en la comunidad', opts:['Solo pagar impuestos','La manera de tomar decisiones en la comunidad','Viajar a otros países','Jugar en el celular']},
-  {id:'pat', q:'¿Qué es patrimonio cultural?', a:'La herencia que recibimos de nuestros antepasados', opts:['Solo dinero del banco','La herencia que recibimos de nuestros antepasados','Un tipo de impuesto','Una app de mapas']},
-  {id:'id', q:'¿Qué es identidad?', a:'El conjunto de rasgos que caracterizan a una persona', opts:['El conjunto de rasgos que caracterizan a una persona','Solo tu nombre','Tu número de teléfono','Una foto de Instagram']},
-  {id:'ej', q:'Ejemplo de patrimonio cultural de Puerto Rico:', a:'Baile de bomba (o mofongo)', opts:['Baile de bomba (o mofongo)','Un videojuego nuevo','Una tarjeta de crédito','Un presupuesto']},
-  {id:'et', q:'Las 3 etapas del intercambio comercial son…', a:'Trueque → monedas/billetes → tarjetas', opts:['Comprar → vender → regalar','Trueque → monedas/billetes → tarjetas','Ahorrar → gastar → pedir','Lunes → martes → miércoles']},
-  {id:'fp', q:'¿Qué son las finanzas personales?', a:'Manejo del presupuesto, ahorrar y decisiones de dinero', opts:['Solo el sueldo del gobierno','Manejo del presupuesto, ahorrar y decisiones de dinero','Comprar sin pensar','Trueque entre amigos']},
-  {id:'em', q:'Un emprendedor es…', a:'Una persona que inicia y pone en marcha un proyecto', opts:['Alguien que solo ahorra','Una persona que inicia y pone en marcha un proyecto','Un ciudadano digital','Un tipo de cooperativa']},
-  {id:'co', q:'Una cooperativa es…', a:'Personas que trabajan juntas por un objetivo en común', opts:['Una tienda de videojuegos','Personas que trabajan juntas por un objetivo en común','Solo un banco','Un impuesto']},
-  {id:'ec', q:'La economía estudia…', a:'Producción y distribución de bienes y servicios', opts:['Solo el clima','Producción y distribución de bienes y servicios','Cómo votar a los 18','Patrimonio cultural']},
-  {id:'ah', q:'Ahorrar significa…', a:'Guardar parte del dinero para usarlo en el futuro', opts:['Gastar todo hoy','Guardar parte del dinero para usarlo en el futuro','Pedir prestado siempre','Hacer trueque']},
-  {id:'cd', q:'¿Qué es ciudadanía digital?', a:'Normas y principios para usar bien la tecnología', opts:['Solo tener celular','Normas y principios para usar bien la tecnología','No usar internet nunca','Comprar online sin pensar']},
-  {id:'vo', q:'¿A qué edad pueden votar los ciudadanos puertorriqueños?', a:'18 años', opts:['12 años','16 años','18 años','21 años']},
-  {id:'tf1', q:'Cierto o Falso: La participación social NO es una responsabilidad ciudadana.', a:'Falso', opts:['Cierto','Falso']},
-  {id:'tf2', q:'Cierto o Falso: El Viejo San Juan es un ejemplo de patrimonio cultural.', a:'Cierto', opts:['Cierto','Falso']},
-  {id:'tf3', q:'Cierto o Falso: El trueque es un instrumento moderno de la economía actual.', a:'Falso', opts:['Cierto','Falso']},
-  {id:'tf4', q:'Cierto o Falso: El presupuesto es el plan de cuánto dinero se recibe y cuánto se gasta.', a:'Cierto', opts:['Cierto','Falso']},
-  {id:'tf5', q:'Cierto o Falso: El cooperativismo se basa en el trabajo mutuo y la igualdad.', a:'Cierto', opts:['Cierto','Falso']},
-];
+(function () {
+  try {
+    var NEED = 2;
+    var KEY = "mateo-sociales-5to-v2";
+    var BANK = [
+      { id: "pc", q: "Que es participacion ciudadana?", a: "La manera de tomar decisiones en la comunidad", opts: ["Solo pagar impuestos", "La manera de tomar decisiones en la comunidad", "Viajar a otros paises", "Jugar en el celular"] },
+      { id: "pat", q: "Que es patrimonio cultural?", a: "La herencia que recibimos de nuestros antepasados", opts: ["Solo dinero del banco", "La herencia que recibimos de nuestros antepasados", "Un tipo de impuesto", "Una app de mapas"] },
+      { id: "id", q: "Que es identidad?", a: "El conjunto de rasgos que caracterizan a una persona", opts: ["El conjunto de rasgos que caracterizan a una persona", "Solo tu nombre", "Tu numero de telefono", "Una foto de Instagram"] },
+      { id: "ej", q: "Ejemplo de patrimonio cultural de Puerto Rico:", a: "Baile de bomba (o mofongo)", opts: ["Baile de bomba (o mofongo)", "Un videojuego nuevo", "Una tarjeta de credito", "Un presupuesto"] },
+      { id: "et", q: "Las 3 etapas del intercambio comercial son:", a: "Trueque, monedas/billetes, tarjetas", opts: ["Comprar, vender, regalar", "Trueque, monedas/billetes, tarjetas", "Ahorrar, gastar, pedir", "Lunes, martes, miercoles"] },
+      { id: "fp", q: "Que son las finanzas personales?", a: "Manejo del presupuesto, ahorrar y decisiones de dinero", opts: ["Solo el sueldo del gobierno", "Manejo del presupuesto, ahorrar y decisiones de dinero", "Comprar sin pensar", "Trueque entre amigos"] },
+      { id: "em", q: "Un emprendedor es:", a: "Una persona que inicia y pone en marcha un proyecto", opts: ["Alguien que solo ahorra", "Una persona que inicia y pone en marcha un proyecto", "Un ciudadano digital", "Un tipo de cooperativa"] },
+      { id: "co", q: "Una cooperativa es:", a: "Personas que trabajan juntas por un objetivo en comun", opts: ["Una tienda de videojuegos", "Personas que trabajan juntas por un objetivo en comun", "Solo un banco", "Un impuesto"] },
+      { id: "ec", q: "La economia estudia:", a: "Produccion y distribucion de bienes y servicios", opts: ["Solo el clima", "Produccion y distribucion de bienes y servicios", "Como votar a los 18", "Patrimonio cultural"] },
+      { id: "ah", q: "Ahorrar significa:", a: "Guardar parte del dinero para usarlo en el futuro", opts: ["Gastar todo hoy", "Guardar parte del dinero para usarlo en el futuro", "Pedir prestado siempre", "Hacer trueque"] },
+      { id: "cd", q: "Que es ciudadania digital?", a: "Normas y principios para usar bien la tecnologia", opts: ["Solo tener celular", "Normas y principios para usar bien la tecnologia", "No usar internet nunca", "Comprar online sin pensar"] },
+      { id: "vo", q: "A que edad pueden votar los ciudadanos puertorriquenos?", a: "18 anos", opts: ["12 anos", "16 anos", "18 anos", "21 anos"] },
+      { id: "tf1", q: "Cierto o Falso: La participacion social NO es una responsabilidad ciudadana.", a: "Falso", opts: ["Cierto", "Falso"] },
+      { id: "tf2", q: "Cierto o Falso: El Viejo San Juan es un ejemplo de patrimonio cultural.", a: "Cierto", opts: ["Cierto", "Falso"] },
+      { id: "tf3", q: "Cierto o Falso: El trueque es un instrumento moderno de la economia actual.", a: "Falso", opts: ["Cierto", "Falso"] },
+      { id: "tf4", q: "Cierto o Falso: El presupuesto es el plan de cuanto dinero se recibe y cuanto se gasta.", a: "Cierto", opts: ["Cierto", "Falso"] },
+      { id: "tf5", q: "Cierto o Falso: El cooperativismo se basa en el trabajo mutuo y la igualdad.", a: "Cierto", opts: ["Cierto", "Falso"] }
+    ];
 
-const KEY='mateo-sociales-5to-v1';
-const NEED=2; // correct in a row to master
-function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+    var mastery = {};
+    var pts = 0;
+    var streak = 0;
+    var queue = [];
+    var cur = null;
+    var answered = false;
+    var total = BANK.length;
+    var wasWrong = false;
 
-let mastery={}, pts=0, streak=0, queue=[], cur=null, answered=false, total=BANK.length;
-
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify({pts,best:Math.max(pts, getBest()), mastery})); }catch(e){} }
-function getBest(){ try{ return (JSON.parse(localStorage.getItem(KEY)||'{}').best)||0 }catch(e){return 0} }
-function load(){ try{ const d=JSON.parse(localStorage.getItem(KEY)||'{}'); if(d.mastery) mastery=d.mastery; }catch(e){} }
-
-function remaining(){ return BANK.filter(q => (mastery[q.id]||0) < NEED).length; }
-function updateHud(){
-  document.getElementById('pts').textContent=pts;
-  document.getElementById('streak').textContent=streak;
-  document.getElementById('left').textContent=remaining();
-  const done = total - remaining();
-  document.getElementById('prog').style.width = (100*done/total)+'%';
-}
-
-function buildQueue(){
-  const weak = BANK.filter(q => (mastery[q.id]||0) < NEED);
-  queue = shuffle(weak);
-  // put recently failed near front: already in shuffle; when fail we push to end+2
-}
-
-function showQ(){
-  answered=false;
-  document.getElementById('next').disabled=true;
-  document.getElementById('fb').textContent='';
-  document.getElementById('fb').className='fb';
-  if(!queue.length){ buildQueue(); }
-  if(!remaining()){ finish(); return; }
-  if(!queue.length){ buildQueue(); }
-  cur = queue.shift();
-  const m = mastery[cur.id]||0;
-  const retry = m>0 || (document.getElementById('hint').dataset.wasWrong==='1');
-  document.getElementById('meta').innerHTML = retry || (mastery[cur.id]||0)>0
-    ? '<span class="tag-retry">🔁 Repaso (la fallaste antes)</span> · falta '+(NEED-m)+' bien'
-    : 'Nueva · gana +10 pts';
-  document.getElementById('hint').dataset.wasWrong='0';
-  document.getElementById('q').textContent=cur.q;
-  const box=document.getElementById('opts'); box.innerHTML='';
-  shuffle(cur.opts).forEach(o=>{
-    const b=document.createElement('button'); b.className='opt'; b.textContent=o;
-    b.onclick=()=>pick(o,b); box.appendChild(b);
-  });
-  updateHud();
-}
-
-function pick(choice, btn){
-  if(answered) return; answered=true;
-  [...document.querySelectorAll('#opts .opt')].forEach(o=>{
-    o.disabled=true;
-    if(o.textContent===cur.a) o.classList.add('ok');
-  });
-  const fb=document.getElementById('fb');
-  const ok = choice===cur.a;
-  if(ok){
-    btn.classList.add('ok');
-    mastery[cur.id]=(mastery[cur.id]||0)+1;
-    const bonus = streak>=2 ? 5 : 0;
-    pts += 10 + bonus;
-    streak += 1;
-    fb.textContent = bonus ? `¡Bien! +10 y +${bonus} por racha 🔥` : '¡Bien! +10 pts ✅';
-    fb.className='fb ok';
-    // if not mastered yet, put back later in queue
-    if((mastery[cur.id]||0) < NEED){
-      queue.push(cur);
-      document.getElementById('hint').textContent='Una más bien y esta queda dominada.';
-    } else {
-      document.getElementById('hint').textContent='¡Dominada! 💪';
+    function $(id) { return document.getElementById(id); }
+    function shuffle(a) {
+      var b = a.slice();
+      for (var i = b.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = b[i]; b[i] = b[j]; b[j] = t;
+      }
+      return b;
     }
-  } else {
-    btn.classList.add('bad');
-    mastery[cur.id]=0; // reset streak for this question
-    streak=0;
-    pts = Math.max(0, pts-2);
-    fb.textContent='Incorrecto. Correcta: '+cur.a;
-    fb.className='fb bad';
-    document.getElementById('hint').textContent='Vuelve pronto — hay que aprenderla.';
-    document.getElementById('hint').dataset.wasWrong='1';
-    // re-insert soon: after 1-2 other questions
-    const pos = Math.min(queue.length, 1 + Math.floor(Math.random()*2));
-    queue.splice(pos, 0, cur);
+    function getBest() {
+      try {
+        var d = JSON.parse(localStorage.getItem(KEY) || "{}");
+        return d.best || 0;
+      } catch (e) { return 0; }
+    }
+    function save() {
+      try {
+        localStorage.setItem(KEY, JSON.stringify({ pts: pts, best: Math.max(pts, getBest()), mastery: mastery }));
+      } catch (e) {}
+    }
+    function remaining() {
+      var n = 0;
+      for (var i = 0; i < BANK.length; i++) {
+        if ((mastery[BANK[i].id] || 0) < NEED) n++;
+      }
+      return n;
+    }
+    function updateHud() {
+      $("pts").textContent = String(pts);
+      $("streak").textContent = String(streak);
+      $("left").textContent = String(remaining());
+      var done = total - remaining();
+      $("prog").style.width = (100 * done / total) + "%";
+    }
+    function buildQueue() {
+      queue = [];
+      for (var i = 0; i < BANK.length; i++) {
+        if ((mastery[BANK[i].id] || 0) < NEED) queue.push(BANK[i]);
+      }
+      queue = shuffle(queue);
+    }
+    function finish() {
+      $("play").classList.add("hide");
+      $("done").classList.add("show");
+      var best = Math.max(pts, getBest());
+      try {
+        localStorage.setItem(KEY, JSON.stringify({ pts: pts, best: best, mastery: mastery }));
+      } catch (e) {}
+      $("final").textContent = "Puntos finales: " + pts + ". Todas las preguntas dominadas (2 bien seguidas cada una).";
+      $("best").textContent = String(best);
+      updateHud();
+    }
+    function showQ() {
+      answered = false;
+      $("next").disabled = true;
+      $("fb").textContent = "";
+      $("fb").className = "fb";
+      $("hint").textContent = "";
+      if (remaining() === 0) { finish(); return; }
+      if (queue.length === 0) buildQueue();
+      if (queue.length === 0) { finish(); return; }
+      cur = queue.shift();
+      var m = mastery[cur.id] || 0;
+      if (wasWrong || m > 0) {
+        $("meta").innerHTML = '<span class="retry">Repaso (hay que aprenderla)</span> · falta ' + (NEED - m) + ' bien';
+      } else {
+        $("meta").textContent = "Nueva · gana +10 pts";
+      }
+      wasWrong = false;
+      $("q").textContent = cur.q;
+      var box = $("opts");
+      box.innerHTML = "";
+      var opts = shuffle(cur.opts);
+      for (var i = 0; i < opts.length; i++) {
+        (function (o) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "opt";
+          b.textContent = o;
+          b.onclick = function () { pick(o, b); };
+          box.appendChild(b);
+        })(opts[i]);
+      }
+      updateHud();
+    }
+    function pick(choice, btn) {
+      if (answered) return;
+      answered = true;
+      var nodes = $("opts").querySelectorAll("button.opt");
+      for (var i = 0; i < nodes.length; i++) {
+        nodes[i].disabled = true;
+        if (nodes[i].textContent === cur.a) nodes[i].classList.add("ok");
+      }
+      var fb = $("fb");
+      if (choice === cur.a) {
+        btn.classList.add("ok");
+        mastery[cur.id] = (mastery[cur.id] || 0) + 1;
+        var bonus = streak >= 2 ? 5 : 0;
+        pts += 10 + bonus;
+        streak += 1;
+        fb.textContent = bonus ? ("Bien! +" + (10 + bonus) + " (racha)") : "Bien! +10 pts";
+        fb.className = "fb ok";
+        if ((mastery[cur.id] || 0) < NEED) {
+          queue.push(cur);
+          $("hint").textContent = "Una mas bien y esta queda dominada.";
+        } else {
+          $("hint").textContent = "Dominada!";
+        }
+      } else {
+        btn.classList.add("bad");
+        mastery[cur.id] = 0;
+        streak = 0;
+        pts = Math.max(0, pts - 2);
+        fb.textContent = "Incorrecto. Correcta: " + cur.a;
+        fb.className = "fb bad";
+        $("hint").textContent = "Vuelve pronto: hay que aprenderla.";
+        wasWrong = true;
+        var pos = Math.min(queue.length, 1 + Math.floor(Math.random() * 2));
+        queue.splice(pos, 0, cur);
+      }
+      save();
+      updateHud();
+      $("next").disabled = false;
+    }
+
+    $("next").onclick = function () {
+      if (remaining() === 0) finish();
+      else showQ();
+    };
+    $("again").onclick = function () {
+      mastery = {};
+      pts = 0;
+      streak = 0;
+      queue = [];
+      wasWrong = false;
+      $("play").classList.remove("hide");
+      $("done").classList.remove("show");
+      save();
+      buildQueue();
+      showQ();
+    };
+
+    buildQueue();
+    showQ();
+  } catch (e) {
+    var el = document.getElementById("err");
+    el.style.display = "block";
+    el.textContent = "Error: " + e.message;
   }
-  save(); updateHud();
-  document.getElementById('next').disabled=false;
-}
-
-function finish(){
-  document.getElementById('play').hidden=true;
-  document.getElementById('done').hidden=false;
-  const best=Math.max(pts,getBest());
-  try{ const d=JSON.parse(localStorage.getItem(KEY)||'{}'); d.best=best; d.pts=pts; localStorage.setItem(KEY,JSON.stringify(d)); }catch(e){}
-  document.getElementById('final').textContent=`Puntos finales: ${pts}. Todas las preguntas dominadas (2 bien seguidas cada una).`;
-  document.getElementById('best').textContent=best;
-  updateHud();
-}
-
-document.getElementById('next').onclick=()=>{
-  if(!remaining()) finish(); else showQ();
-};
-document.getElementById('again').onclick=()=>{
-  mastery={}; pts=0; streak=0; queue=[];
-  document.getElementById('play').hidden=false;
-  document.getElementById('done').hidden=true;
-  document.getElementById('hint').textContent='';
-  save(); buildQueue(); showQ();
-};
-
-load(); buildQueue(); showQ();
+})();
 </script>
 </body>
 </html>
