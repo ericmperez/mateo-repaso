@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Matemática Cap. 1 - Mateo</title>
+<style>
+  :root { --bg:#0b1220; --card:#152238; --y:#fbbf24; --g:#22c55e; --r:#f87171; --t:#f1f5f9; --m:#94a3b8; --a:#38bdf8; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, sans-serif; background: #0b1220; color: var(--t); min-height: 100vh; padding: 16px; }
+  .w { max-width: 640px; margin: 0 auto; }
+  a.back { color: var(--a); font-weight: 700; text-decoration: none; }
+  h1 { font-size: 1.4rem; margin: 8px 0 4px; }
+  .lead { color: var(--m); margin: 0 0 16px; font-size: 0.95rem; }
+  .hud { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .stat { background: var(--card); border: 1px solid #334155; border-radius: 12px; padding: 10px; text-align: center; }
+  .stat b { display: block; font-size: 1.4rem; color: var(--y); }
+  .stat span { font-size: 0.7rem; color: var(--m); text-transform: uppercase; }
+  .bar { height: 8px; background: #334155; border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
+  .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--a), var(--y)); transition: width .25s; }
+  .card { background: var(--card); border: 1px solid #334155; border-radius: 16px; padding: 18px; }
+  .meta { color: var(--m); font-size: 0.85rem; margin-bottom: 10px; font-weight: 600; }
+  .meta .retry { color: var(--r); }
+  .q { font-size: 1.2rem; font-weight: 800; line-height: 1.35; margin: 0 0 14px; }
+  .opts { display: grid; gap: 8px; }
+  button.opt { text-align: left; padding: 14px; border-radius: 12px; border: 2px solid #475569; background: #0b1220; color: var(--t); font-size: 1rem; cursor: pointer; min-height: 48px; }
+  button.opt:hover:not(:disabled) { border-color: var(--a); }
+  button.opt:disabled { cursor: default; }
+  button.opt.ok { border-color: var(--g); background: rgba(20,83,45,.35); }
+  button.opt.bad { border-color: var(--r); background: rgba(127,29,29,.3); }
+  .cmp { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  @media (min-width: 420px) { .cmp { grid-template-columns: 1fr 1fr 1fr; } }
+  .numin { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #475569; background: #0b1220; color: var(--t); font-size: 1.25rem; font-weight: 700; }
+  .numin:focus { outline: none; border-color: var(--a); }
+  .numin:disabled { opacity: 0.8; }
+  .inl { color: var(--m); font-size: 0.85rem; margin-bottom: 6px; font-weight: 600; }
+  .fb { min-height: 1.5em; margin-top: 12px; font-weight: 700; }
+  .fb.ok { color: var(--g); } .fb.bad { color: var(--r); }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .actions { display: flex; gap: 8px; margin-left: auto; }
+  .btn { background: var(--y); color: #0b1220; border: 0; font-weight: 900; padding: 12px 18px; border-radius: 12px; font-size: 1rem; cursor: pointer; min-height: 48px; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn.ghost { background: #334155; color: var(--t); }
+  .done { text-align: center; display: none; }
+  .done.show { display: block; }
+  .play.hide { display: none; }
+  .err { background: #7f1d1d; padding: 12px; border-radius: 8px; margin-bottom: 12px; display: none; }
+</style>
+</head>
+<body>
+<div class="w">
+  <a class="back" href="../index.html">&larr; Juegos</a>
+  <h1>Matemática Cap. 1</h1>
+  <p class="lead">Números cardinales y decimales · práctica de valor posicional, forma expandida, comparar y redondear.</p>
+  <div class="err" id="err"></div>
+  <div class="hud">
+    <div class="stat"><b id="pts">0</b><span>Puntos</span></div>
+    <div class="stat"><b id="streak">0</b><span>Racha</span></div>
+    <div class="stat"><b id="left">0</b><span>Por dominar</span></div>
+  </div>
+  <div class="bar"><i id="prog"></i></div>
+
+  <div class="card play" id="play">
+    <div class="meta" id="meta">Cargando...</div>
+    <div class="q" id="q"></div>
+    <div class="opts" id="opts"></div>
+    <div class="fb" id="fb"></div>
+    <div class="row">
+      <span id="hint" style="color:var(--m);font-size:0.85rem"></span>
+      <div class="actions">
+        <button class="btn ghost" id="check" hidden>Comprobar</button>
+        <button class="btn" id="next" disabled>Siguiente</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card done" id="done">
+    <h2 style="color:var(--y);margin-top:0">Campeón, Mateo!</h2>
+    <p id="final"></p>
+    <p style="color:var(--m)">Récord: <b id="best" style="color:var(--y)">0</b> pts</p>
+    <button class="btn" id="again">Jugar otra vez</button>
+  </div>
+</div>
+<script>
+(function () {
+  try {
+    var NEED = 2;
+    var KEY = "mateo-matematica-cap1-v1";
+    var BANK = [
+      { id: "tab1", topic: "Tabla de valor posicional", q: "Un número de 10 dígitos llega hasta las unidades de billón. En 4,186,257,093, ¿en qué posición está el 4?", type: "mc", a: "unidades de billón", opts: ["centenas de millón", "unidades de millón", "unidades de billón", "decenas de billón"] },
+      { id: "tab2", topic: "Tabla de valor posicional", q: "Después de las centenas de millón, la siguiente posición hacia la izquierda es:", type: "mc", a: "unidades de billón", opts: ["decenas de millón", "unidades de millar", "unidades de billón", "centenas de billón"] },
+      { id: "tab3", topic: "Tabla de valor posicional", q: "En 4,186,257,093, ¿qué dígito está en las centenas de millón?", type: "num", a: "1" },
+      { id: "pos1", topic: "Posición del dígito", q: "En 4,836, ¿en qué posición está el 8?", type: "mc", a: "centenas", opts: ["unidades", "decenas", "centenas", "unidades de millar"] },
+      { id: "pos2", topic: "Posición del dígito", q: "En 27,159, ¿en qué posición está el 7?", type: "mc", a: "unidades de millar", opts: ["centenas", "unidades de millar", "decenas de millar", "centenas de millar"] },
+      { id: "pos3", topic: "Posición del dígito", q: "En 390,614, ¿en qué posición está el 3?", type: "mc", a: "centenas de millar", opts: ["unidades de millar", "decenas de millar", "centenas de millar", "unidades de millón"] },
+      { id: "pos4", topic: "Posición del dígito", q: "En 5,082,467, ¿en qué posición está el 5?", type: "mc", a: "unidades de millón", opts: ["centenas de millar", "unidades de millón", "decenas de millón", "unidades de billón"] },
+      { id: "pos5", topic: "Posición del dígito", q: "En 18,304,256, ¿en qué posición está el 1?", type: "mc", a: "decenas de millón", opts: ["unidades de millón", "decenas de millón", "centenas de millón", "unidades de billón"] },
+      { id: "pos6", topic: "Posición del dígito", q: "En 647,215,890, ¿en qué posición está el 6?", type: "mc", a: "centenas de millón", opts: ["decenas de millón", "centenas de millón", "unidades de billón", "centenas de millar"] },
+      { id: "val1", topic: "Valor del dígito", q: "¿Cuál es el valor del 7 en 2,719?", type: "num", a: "700" },
+      { id: "val2", topic: "Valor del dígito", q: "¿Cuál es el valor del 6 en 46,083?", type: "num", a: "6000" },
+      { id: "val3", topic: "Valor del dígito", q: "¿Cuál es el valor del 5 en 508,234?", type: "num", a: "500000" },
+      { id: "val4", topic: "Valor del dígito", q: "¿Cuál es el valor del 7 en 3,761,042?", type: "num", a: "700000" },
+      { id: "val5", topic: "Valor del dígito", q: "¿Cuál es el valor del 2 en 82,409,156?", type: "num", a: "2000000" },
+      { id: "exp1", topic: "Forma expandida", q: "¿Cuál es la forma expandida de 2,046?", type: "mc", a: "2,000 + 40 + 6", opts: ["2,000 + 400 + 6", "2,000 + 40 + 6", "200 + 40 + 6", "2,000 + 46"] },
+      { id: "exp2", topic: "Forma expandida", q: "¿Cuál es la forma expandida de 80,305?", type: "mc", a: "80,000 + 300 + 5", opts: ["80,000 + 300 + 5", "8,000 + 300 + 5", "80,000 + 3,000 + 5", "80,000 + 30 + 5"] },
+      { id: "exp3", topic: "Forma expandida", q: "¿Cuál es la forma expandida de 1,407,020?", type: "mc", a: "1,000,000 + 400,000 + 7,000 + 20", opts: ["1,000,000 + 40,000 + 7,000 + 20", "1,000,000 + 400,000 + 700 + 20", "1,000,000 + 400,000 + 7,000 + 20", "1,400,000 + 7,000 + 20"] },
+      { id: "std1", topic: "Forma estándar", q: "Escribe en forma estándar: 600,000 + 50,000 + 800 + 3", type: "num", a: "650803" },
+      { id: "std2", topic: "Forma estándar", q: "Escribe en forma estándar: 4,000,000 + 20,000 + 100 + 9", type: "num", a: "4020109" },
+      { id: "std3", topic: "Forma estándar", q: "Escribe en forma estándar: 90,000 + 7,000 + 50 + 6", type: "num", a: "97056" },
+      { id: "std4", topic: "Forma estándar", q: "Escribe en forma estándar: 300,000,000 + 8,000 + 40 + 2", type: "num", a: "300008042" },
+      { id: "cmp1", topic: "Comparar", q: "Compara: 8,342 ___ 8,432", type: "compare", a: "<" },
+      { id: "cmp2", topic: "Comparar", q: "Compara: 56,780 ___ 56,780", type: "compare", a: "=" },
+      { id: "cmp3", topic: "Comparar", q: "Compara: 245 ___ 254", type: "compare", a: "<" },
+      { id: "cmp4", topic: "Comparar", q: "Compara: 7,100,899 ___ 710,899", type: "compare", a: ">" },
+      { id: "cmp5", topic: "Comparar", q: "Compara: 403,050 ___ 403,500", type: "compare", a: "<" },
+      { id: "rdc1", topic: "Redondear a la centena", q: "Redondea 381 a la centena más cercana.", type: "num", a: "400" },
+      { id: "rdc2", topic: "Redondear a la centena", q: "Redondea 2,449 a la centena más cercana.", type: "num", a: "2400" },
+      { id: "rdc3", topic: "Redondear a la centena", q: "Redondea 67,551 a la centena más cercana.", type: "num", a: "67600" },
+      { id: "rdc4", topic: "Redondear a la centena", q: "Redondea 9,950 a la centena más cercana.", type: "num", a: "10000" },
+      { id: "rdc5", topic: "Redondear a la centena", q: "Redondea 148,264 a la centena más cercana.", type: "num", a: "148300" },
+      { id: "rdp1", topic: "Redondear a la posición", q: "Redondea 647 a la decena.", type: "num", a: "650" },
+      { id: "rdp2", topic: "Redondear a la posición", q: "Redondea 3,821 a la centena.", type: "num", a: "3800" },
+      { id: "rdp3", topic: "Redondear a la posición", q: "Redondea 15,673 a la decena de millar.", type: "num", a: "20000" },
+      { id: "rdp4", topic: "Redondear a la posición", q: "Redondea 4,268,391 a la unidad de millón.", type: "num", a: "4000000" },
+      { id: "rdp5", topic: "Redondear a la posición", q: "Redondea 572,846,013 a la centena de millón.", type: "num", a: "600000000" },
+      { id: "rdp6", topic: "Redondear a la posición", q: "Redondea 6,194,278 a la decena de millar.", type: "num", a: "6190000" },
+      { id: "rdp7", topic: "Redondear a la posición", q: "Redondea 29,450,812 a la centena de millar.", type: "num", a: "29500000" },
+      { id: "wrd1", topic: "Números en palabras", q: "¿Cómo se lee 3,408 en palabras?", type: "mc", a: "tres mil cuatrocientos ocho", opts: ["tres mil cuatrocientos ocho", "tres mil cuarenta y ocho", "treinta mil cuatrocientos ocho", "tres mil cuatrocientos ochenta"] },
+      { id: "wrd2", topic: "Números en palabras", q: "¿Cómo se lee 72,015 en palabras?", type: "mc", a: "setenta y dos mil quince", opts: ["setenta y dos mil ciento quince", "setecientos dos mil quince", "setenta y dos mil quince", "setenta y dos mil cincuenta"] },
+      { id: "wrd3", topic: "Números en palabras", q: "¿Cómo se lee 1,260,500 en palabras?", type: "mc", a: "un millón doscientos sesenta mil quinientos", opts: ["un millón doscientos dieciséis mil quinientos", "un millón doscientos sesenta mil quinientos", "doce millones sesenta mil quinientos", "un millón doscientos sesenta mil cinco"] },
+      { id: "wrd4", topic: "Números en palabras", q: "¿Cómo se lee 8,000,000,000 en palabras? (escala corta: 1 billón = 1,000,000,000)", type: "mc", a: "ocho billones", opts: ["ocho millones", "ocho mil", "ochocientos millones", "ocho billones"] },
+      { id: "dec1", topic: "Decimales: posición", q: "En 6.473, ¿en qué lugar decimal está el 7?", type: "mc", a: "centésimos", opts: ["décimos", "centésimos", "milésimos", "unidades"] },
+      { id: "dec2", topic: "Decimales: posición", q: "En 9.805, ¿en qué lugar decimal está el 8?", type: "mc", a: "décimos", opts: ["unidades", "décimos", "centésimos", "milésimos"] },
+      { id: "dec3", topic: "Decimales: valor", q: "En 0.126, ¿cuál es el valor del 2?", type: "num", a: "0.02" },
+      { id: "dec4", topic: "Decimales: posición", q: "En 14.309, ¿en qué lugar decimal está el 9?", type: "mc", a: "milésimos", opts: ["décimos", "centésimos", "milésimos", "centenas"] },
+      { id: "dec5", topic: "Decimales: valor", q: "En 5.67, ¿cuál es el valor del 6?", type: "num", a: "0.6" },
+      { id: "dec6", topic: "Decimales: valor", q: "En 8.214, ¿cuál es el valor del 1?", type: "num", a: "0.01" },
+      { id: "rdd1", topic: "Redondear decimales", q: "Redondea 0.284 al centésimo.", type: "num", a: "0.28" },
+      { id: "rdd2", topic: "Redondear decimales", q: "Redondea 3.76 al décimo.", type: "num", a: "3.8" },
+      { id: "rdd3", topic: "Redondear decimales", q: "Redondea 8.135 al centésimo.", type: "num", a: "8.14" },
+      { id: "rdd4", topic: "Redondear decimales", q: "Redondea 12.94 al décimo.", type: "num", a: "12.9" },
+      { id: "rdd5", topic: "Redondear decimales", q: "Redondea 0.995 al centésimo.", type: "num", a: "1" }
+    ];
+
+    var mastery = {};
+    var pts = 0;
+    var streak = 0;
+    var queue = [];
+    var cur = null;
+    var answered = false;
+    var total = BANK.length;
+    var wasWrong = false;
+    var SIGNS = [
+      { v: "<", t: "< menor que" },
+      { v: "=", t: "= igual que" },
+      { v: ">", t: "> mayor que" }
+    ];
+
+    function $(id) { return document.getElementById(id); }
+    function shuffle(a) {
+      var b = a.slice();
+      for (var i = b.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = b[i]; b[i] = b[j]; b[j] = t;
+      }
+      return b;
+    }
+    function parseFlexible(s) {
+      s = String(s).trim().replace(/\s/g, "").replace(/,/g, "");
+      if (s === "") return null;
+      if (!/^-?\d*\.?\d+$/.test(s)) return null;
+      var n = parseFloat(s);
+      return isFinite(n) ? n : null;
+    }
+    function sameNum(user, expected) {
+      var u = parseFlexible(user);
+      var e = parseFlexible(expected);
+      if (u === null || e === null) return false;
+      return Math.abs(u - e) < 1e-9;
+    }
+    function prettyAns(item) {
+      if (item.type === "compare") {
+        for (var i = 0; i < SIGNS.length; i++) {
+          if (SIGNS[i].v === item.a) return SIGNS[i].t;
+        }
+        return item.a;
+      }
+      if (item.type === "num") {
+        var n = parseFlexible(item.a);
+        if (n === null) return item.a;
+        if (Math.abs(n - Math.round(n)) < 1e-9 && String(item.a).indexOf(".") === -1) {
+          return Math.round(n).toLocaleString("en-US");
+        }
+        return String(item.a);
+      }
+      return item.a;
+    }
+    function getBest() {
+      try {
+        var d = JSON.parse(localStorage.getItem(KEY) || "{}");
+        return d.best || 0;
+      } catch (e) { return 0; }
+    }
+    function save() {
+      try {
+        localStorage.setItem(KEY, JSON.stringify({ pts: pts, best: Math.max(pts, getBest()), mastery: mastery }));
+      } catch (e) {}
+    }
+    function remaining() {
+      var n = 0;
+      for (var i = 0; i < BANK.length; i++) {
+        if ((mastery[BANK[i].id] || 0) < NEED) n++;
+      }
+      return n;
+    }
+    function updateHud() {
+      $("pts").textContent = String(pts);
+      $("streak").textContent = String(streak);
+      $("left").textContent = String(remaining());
+      var doneCount = total - remaining();
+      $("prog").style.width = (100 * doneCount / total) + "%";
+    }
+    function buildQueue() {
+      queue = [];
+      for (var i = 0; i < BANK.length; i++) {
+        if ((mastery[BANK[i].id] || 0) < NEED) queue.push(BANK[i]);
+      }
+      queue = shuffle(queue);
+    }
+    function finish() {
+      $("play").classList.add("hide");
+      $("done").classList.add("show");
+      var best = Math.max(pts, getBest());
+      try {
+        localStorage.setItem(KEY, JSON.stringify({ pts: pts, best: best, mastery: mastery }));
+      } catch (e) {}
+      $("final").textContent = "Puntos finales: " + pts + ". Todas las preguntas dominadas (2 bien seguidas cada una).";
+      $("best").textContent = String(best);
+      updateHud();
+    }
+    function grade(ok) {
+      var fb = $("fb");
+      if (ok) {
+        mastery[cur.id] = (mastery[cur.id] || 0) + 1;
+        var bonus = streak >= 2 ? 5 : 0;
+        pts += 10 + bonus;
+        streak += 1;
+        fb.textContent = bonus ? ("Bien! +" + (10 + bonus) + " (racha)") : "Bien! +10 pts";
+        fb.className = "fb ok";
+        if ((mastery[cur.id] || 0) < NEED) {
+          queue.push(cur);
+          $("hint").textContent = "Una más bien y esta queda dominada.";
+        } else {
+          $("hint").textContent = "Dominada!";
+        }
+      } else {
+        mastery[cur.id] = 0;
+        streak = 0;
+        pts = Math.max(0, pts - 2);
+        fb.textContent = "Incorrecto. Correcta: " + prettyAns(cur);
+        fb.className = "fb bad";
+        $("hint").textContent = "Vuelve pronto: hay que aprenderla.";
+        wasWrong = true;
+        var pos = Math.min(queue.length, 1 + Math.floor(Math.random() * 2));
+        queue.splice(pos, 0, cur);
+      }
+      save();
+      updateHud();
+      $("next").disabled = false;
+      $("check").hidden = true;
+    }
+    function showQ() {
+      answered = false;
+      $("next").disabled = true;
+      $("check").hidden = true;
+      $("check").disabled = false;
+      $("fb").textContent = "";
+      $("fb").className = "fb";
+      $("hint").textContent = "";
+      if (remaining() === 0) { finish(); return; }
+      if (queue.length === 0) buildQueue();
+      if (queue.length === 0) { finish(); return; }
+      cur = queue.shift();
+      var m = mastery[cur.id] || 0;
+      var topic = cur.topic ? (cur.topic + " · ") : "";
+      if (wasWrong || m > 0) {
+        $("meta").innerHTML = topic + '<span class="retry">Repaso (hay que aprenderla)</span> · falta ' + (NEED - m) + ' bien';
+      } else {
+        $("meta").textContent = topic + "Nueva · gana +10 pts";
+      }
+      wasWrong = false;
+      $("q").textContent = cur.q;
+      var box = $("opts");
+      box.innerHTML = "";
+      box.className = "opts";
+      if (cur.type === "num") {
+        var lab = document.createElement("div");
+        lab.className = "inl";
+        lab.textContent = "Escribe el número (puedes usar comas).";
+        var inp = document.createElement("input");
+        inp.id = "ans";
+        inp.className = "numin";
+        inp.type = "text";
+        inp.inputMode = "decimal";
+        inp.autocomplete = "off";
+        inp.autocapitalize = "off";
+        inp.spellcheck = false;
+        inp.setAttribute("aria-label", "Escribe el número");
+        inp.placeholder = "Ej. 1,250 o 0.35";
+        inp.addEventListener("keydown", function (ev) {
+          if (ev.key === "Enter") {
+            ev.preventDefault();
+            checkNum();
+          }
+        });
+        box.appendChild(lab);
+        box.appendChild(inp);
+        $("check").hidden = false;
+        setTimeout(function () { inp.focus(); }, 40);
+      } else if (cur.type === "compare") {
+        box.className = "opts cmp";
+        for (var s = 0; s < SIGNS.length; s++) {
+          (function (sign) {
+            var b = document.createElement("button");
+            b.type = "button";
+            b.className = "opt";
+            b.textContent = sign.t;
+            b.onclick = function () { pick(sign.v, b); };
+            box.appendChild(b);
+          })(SIGNS[s]);
+        }
+      } else {
+        var opts = shuffle(cur.opts);
+        for (var i = 0; i < opts.length; i++) {
+          (function (o) {
+            var b = document.createElement("button");
+            b.type = "button";
+            b.className = "opt";
+            b.textContent = o;
+            b.onclick = function () { pick(o, b); };
+            box.appendChild(b);
+          })(opts[i]);
+        }
+      }
+      updateHud();
+    }
+    function lockOpts() {
+      var nodes = $("opts").querySelectorAll("button.opt");
+      for (var i = 0; i < nodes.length; i++) nodes[i].disabled = true;
+    }
+    function markCorrectOpts() {
+      var nodes = $("opts").querySelectorAll("button.opt");
+      for (var i = 0; i < nodes.length; i++) {
+        var txt = nodes[i].textContent;
+        if (cur.type === "compare") {
+          if (txt.indexOf(cur.a) === 0) nodes[i].classList.add("ok");
+        } else if (txt === cur.a) {
+          nodes[i].classList.add("ok");
+        }
+      }
+    }
+    function pick(choice, btn) {
+      if (answered) return;
+      answered = true;
+      lockOpts();
+      markCorrectOpts();
+      var ok = choice === cur.a;
+      if (ok) btn.classList.add("ok");
+      else btn.classList.add("bad");
+      grade(ok);
+    }
+    function checkNum() {
+      if (answered) return;
+      var inp = $("ans");
+      var raw = inp ? inp.value : "";
+      if (parseFlexible(raw) === null) {
+        $("hint").textContent = "Escribe un número para comprobar.";
+        return;
+      }
+      answered = true;
+      if (inp) inp.disabled = true;
+      $("check").disabled = true;
+      var ok = sameNum(raw, cur.a);
+      if (inp) inp.classList.add(ok ? "ok" : "bad");
+      if (ok) inp.style.borderColor = "#22c55e";
+      else inp.style.borderColor = "#f87171";
+      grade(ok);
+    }
+
+    $("check").onclick = function () { checkNum(); };
+    $("next").onclick = function () {
+      if (remaining() === 0) finish();
+      else showQ();
+    };
+    $("again").onclick = function () {
+      mastery = {};
+      pts = 0;
+      streak = 0;
+      queue = [];
+      wasWrong = false;
+      $("play").classList.remove("hide");
+      $("done").classList.remove("show");
+      save();
+      buildQueue();
+      showQ();
+    };
+
+    buildQueue();
+    showQ();
+  } catch (e) {
+    var el = document.getElementById("err");
+    el.style.display = "block";
+    el.textContent = "Error: " + e.message;
+  }
+})();
+</script>
+</body>
+</html>
